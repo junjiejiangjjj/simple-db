@@ -1,0 +1,34 @@
+cmake_minimum_required (VERSION 3.3)
+
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+SET(CMAKE_C_COMPILER "/usr/bin/gcc")
+SET(CMAKE_CXX_COMPILER "/usr/bin/g++")
+
+# 项目信息
+project (Simple-DB VERSION 0.0.1 LANGUAGES C CXX)
+
+INCLUDE_DIRECTORIES(
+  ${PROJECT_SOURCE_DIR}/
+
+  /usr/local/include
+  /usr/include
+)
+
+LINK_DIRECTORIES(
+  ${PROJECT_BINARY_DIR}/lib
+  /usr/local/lib
+  /usr/lib
+)
+
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
+
+ENABLE_TESTING()
+add_subdirectory(simple_db)

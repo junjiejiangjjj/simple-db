@@ -1,0 +1,5 @@
+PROJECT(Simple-DB)
+add_subdirectory(util)
+
+AUX_SOURCE_DIRECTORY(util DIR_UTIL)
+ADD_LIBRARY(util STATIC ${DIR_UTIL})
