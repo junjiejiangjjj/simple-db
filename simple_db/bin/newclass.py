@@ -45,6 +45,10 @@ class NewClass(object):
         return self.__namespace
 
     @property
+    def cmake_file(self):
+        return os.path.join(os.getcwd(), "CMakeLists.txt")
+
+    @property
     def header_str(self):
         _header_str = ""
         _header_str += "#ifndef SIMPLE_DB_%s_H\n" % self.low_name.upper()
@@ -90,7 +94,7 @@ class NewClass(object):
         _test_str += "    void SetUp() override {\n\n    }\n\n"
         _test_str += "    void TearDown() override {\n\n    }\n\n"
         _test_str += "};\n\n"
-        _test_str += "TEST_F(%s, h) {\n\n}\n\n" % self.test_class_name
+        _test_str += "TEST_F(%s, h) {\n    ASSERT_EQ(0, 0);\n}\n\n" % self.test_class_name
         _test_str += "END_SIMPLE_DB_NS(%s)\n\n" % self.name_space
         _test_str += '''
 int main(int argc, char **argv){
@@ -99,6 +103,20 @@ int main(int argc, char **argv){
 }
 '''
         return _test_str
+
+    @property
+    def add_cmake(self):
+        cmake_str = '''
+ADD_EXECUTABLE(%s %s)
+TARGET_LINK_LIBRARIES(%s %s "/usr/local/lib/libgtest.a")
+add_test(
+    NAME
+    %s
+    COMMAND
+    ${EXECUTABLE_OUTPUT_PATH}/%s
+)
+''' % (self.test_class_name, self.test_file_name, self.test_class_name, self.name_space, self.test_class_name, self.test_class_name)
+        return cmake_str
 
     @property
     def cpp_file_name(self):
@@ -117,10 +135,17 @@ int main(int argc, char **argv){
         with open(file_name, "w") as f:
             f.write(file_str)
 
+    @staticmethod
+    def append_file(file_name, file_str):
+        print "append to cmake"
+        with open(file_name, "a") as f:
+            f.write(file_str)
+
     def run(self):
         NewClass.create_file(self.head_file_name, self.header_str)
         NewClass.create_file(self.cc_file_name, self.cc_str)
         NewClass.create_file(self.test_file_name, self.test_str)
+        NewClass.append_file(self.cmake_file, self.add_cmake)
 
 if __name__ == '__main__':
     '''输入为类名，采用驼峰格式
