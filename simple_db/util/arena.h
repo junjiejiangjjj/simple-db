@@ -1,5 +1,6 @@
 #ifndef SIMPLE_DB_ARENA_H
 #define SIMPLE_DB_ARENA_H
+
 #include "simple_db/common/common.h"
 #include <stddef.h>
 #include <assert.h>

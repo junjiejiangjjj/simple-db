@@ -18,5 +18,17 @@ std::string StringUtil::GetLatestName(const char* name)
     return GetLatestName(s);
 }
 
+std::string StringUtil::GetTimeString(const std::string& timeFormat)
+{
+    time_t curTime;
+    time(&curTime);
+    struct tm t;
+
+    ::localtime_r(&curTime, &t);
+    char buf[50];
+    ::strftime(buf, 50, timeFormat.c_str(), &t);
+    return std::string(buf);
+}
+
 END_SIMPLE_DB_NS(util)
 

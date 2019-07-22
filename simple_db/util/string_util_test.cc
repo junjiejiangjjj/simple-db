@@ -45,6 +45,11 @@ TEST_F(StringUtilTest, h) {
         std::string name = StringUtil::GetLatestName(s);
         ASSERT_EQ(name, "lib");
     }
+
+    {
+        std::string t = StringUtil::GetTimeString("%Y-%m-%d %H:%M:%S");
+        std::cout<< t <<std::endl;
+    }
 }
 
 END_SIMPLE_DB_NS(util)

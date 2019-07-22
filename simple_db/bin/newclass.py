@@ -7,7 +7,8 @@ create new class tool
 3. add namespace
 4. create class template
 '''
-import sys, os
+import sys
+import os
 import re
 
 class NewClass(object):
