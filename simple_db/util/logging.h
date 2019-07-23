@@ -1,3 +1,7 @@
+/*
+  参考muduo日志类实现，使用stringstream代替logstream，简化日志类
+*/
+
 #ifndef SIMPLE_DB_LOGGING_H
 #define SIMPLE_DB_LOGGING_H
 
