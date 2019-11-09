@@ -59,7 +59,7 @@ class NewClass(object):
         _header_str += "class %s {\n" % self.class_name
         _header_str += "public:\n"
         _header_str += "    %s();\n" % self.class_name
-        _header_str += "    ~%s();\n" % self.class_name
+        _header_str += "    virtual ~%s();\n" % self.class_name
         _header_str += "private:\n"
         _header_str += "    %s(const %s&);\n" % (self.class_name, self.class_name)
         _header_str += "    %s& operator=(const %s&);\n" % (self.class_name, self.class_name)
