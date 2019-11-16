@@ -1,7 +1,8 @@
 #ifndef SIMPLE_DB_SLICE_H
 #define SIMPLE_DB_SLICE_H
 
-#include "simple_db/common/common.h" 
+#include "simple_db/common/common.h"
+#include <string.h>
 
 BEGIN_SIMPLE_DB_NS(util)
 

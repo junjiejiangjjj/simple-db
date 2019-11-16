@@ -1,12 +1,12 @@
 #ifndef SIMPLE_DB_POLLER_H
 #define SIMPLE_DB_POLLER_H
 
-#include "simple_db/common/common.h" 
+#include "simple_db/common/common.h"
+#include "simple_db/net/poller/event.h"
 
-BEGIN_SIMPLE_DB_NS(poller)
 
-class EventLoop;
-class EventHandler;
+BEGIN_SIMPLE_DB_NS(net)
+
 
 class Poller {
 public:
@@ -17,15 +17,15 @@ private:
     Poller& operator=(const Poller&);
 
 public:
-    static Poller* CreatePoller(EventLoop *eventLoop);
+    static Poller* CreatePoller(const std::string &pollerName);
 
 public:
-    virtual int AddHandler(EventHandler *handler) = 0;
-    virtual void RemoveHandler(EventHandler *handler) = 0;
-    virtual void LoopOnce(int timeousMs, std::vector<EventHandler *> &handlers);
-
+    virtual void Update(int fd, int event) = 0;
+    virtual void Unregister(int fd) = 0;
+    virtual void Poll(int timeousMs, std::map<int, int> &fdMap) = 0;
 };
 
-END_SIMPLE_DB_NS(poller)
+
+END_SIMPLE_DB_NS(net)
 
 #endif

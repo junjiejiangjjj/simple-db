@@ -1,6 +1,6 @@
 
 ADD_EXECUTABLE(PollerTest poller_test.cc)
-TARGET_LINK_LIBRARIES(PollerTest poller "/usr/local/lib/libgtest.a")
+TARGET_LINK_LIBRARIES(PollerTest poller gtest)
 add_test(
     NAME
     PollerTest
@@ -9,7 +9,7 @@ add_test(
 )
 
 ADD_EXECUTABLE(SelectPollerTest select_poller_test.cc)
-TARGET_LINK_LIBRARIES(SelectPollerTest poller "/usr/local/lib/libgtest.a")
+TARGET_LINK_LIBRARIES(SelectPollerTest poller gtest)
 add_test(
     NAME
     SelectPollerTest

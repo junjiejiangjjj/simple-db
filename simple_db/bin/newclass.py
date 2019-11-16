@@ -109,7 +109,7 @@ int main(int argc, char **argv){
     def add_cmake(self):
         cmake_str = '''
 ADD_EXECUTABLE(%s %s)
-TARGET_LINK_LIBRARIES(%s %s "/usr/local/lib/libgtest.a")
+TARGET_LINK_LIBRARIES(%s %s gtest)
 add_test(
     NAME
     %s

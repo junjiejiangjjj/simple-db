@@ -1,6 +1,7 @@
 #include "select_poller.h"
 #include <gtest/gtest.h>
-BEGIN_SIMPLE_DB_NS(poller)
+
+BEGIN_SIMPLE_DB_NS(net)
 
 class SelectPollerTest : public ::testing::Test {
 protected:
@@ -25,7 +26,7 @@ TEST_F(SelectPollerTest, h) {
     ASSERT_EQ(0, 0);
 }
 
-END_SIMPLE_DB_NS(poller)
+END_SIMPLE_DB_NS(net)
 
 
 int main(int argc, char **argv){
