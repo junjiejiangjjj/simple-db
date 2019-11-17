@@ -4,41 +4,42 @@
 #include "simple_db/common/common.h"
 
 #include <functional>
+#include <unistd.h>
 
 BEGIN_SIMPLE_DB_NS(net)
 
-class EventHandler final{
-public:
-    typedef int HandlerFd;
-    typedef std::function<void()> EventCallback;
-    typedef std::function<void(size_t timeooutMs)> ReadEventCallback;
 
+class EventHandler {
 public:
-    EventHandler();
-    ~EventHandler();
+    typedef std::function<void()> EventCallback;
+    
+public:
+    EventHandler() {}
+    virtual ~EventHandler() { if (mFd) close(mFd); }
+    
 private:
     EventHandler(const EventHandler&);
     EventHandler& operator=(const EventHandler&);
 
 public:
-    void SetReadCallback(ReadEventCallback &cb) { mReadCallback = cb; }
-    void SetWriteCallback(EventCallback &cb) { mWriteCallback = cb; }
-    void SetErrorCallback(EventCallback &cb) { mErrorCallback = cb; }
-
+    void SetReadCallback(const EventCallback &cb) { mReadCallback = cb; }
+    void SetWriteCallback(const EventCallback &cb) { mWriteCallback = cb; }
+    void SetErrorCallback(const EventCallback &cb) { mErrorCallback = cb; }
 
 public:
-    HandlerFd GetHandlerFd();
-    // void HandleRead();
-    // void HandleWrite();
-    // void HandleError();
+    void SetFd(int fd) { mFd=fd; }
+    int GetHandlerFd() const { return mFd; }
+    void HandleEvent(int event);
 
 private:
     EventCallback mWriteCallback;
     EventCallback mErrorCallback;
-    ReadEventCallback mReadCallback;
-
-    HandlerFd mFd;
+    EventCallback mReadCallback;
+    
+private:
+    int mFd;
 };
+
 
 END_SIMPLE_DB_NS(net)
 

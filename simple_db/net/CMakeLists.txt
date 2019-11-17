@@ -34,3 +34,18 @@
 #     COMMAND
 #     ${EXECUTABLE_OUTPUT_PATH}/TcpServerTest
 # )
+
+
+
+
+
+
+
+ADD_EXECUTABLE(ConnectorTest connector_test.cc)
+TARGET_LINK_LIBRARIES(ConnectorTest net gtest)
+add_test(
+    NAME
+    ConnectorTest
+    COMMAND
+    ${EXECUTABLE_OUTPUT_PATH}/ConnectorTest
+)
