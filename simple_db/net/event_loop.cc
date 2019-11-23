@@ -13,6 +13,7 @@ EventLoop::EventLoop(Poller* poller)
 
 EventLoop::~EventLoop()
 {
+    LOG_INFO << "End of event loop";
     for (auto &item: mHandlerMap) {
         SIMPLE_DB_DELETE_AND_SET_NULL(item.second);
     }
@@ -32,7 +33,7 @@ EventLoop* EventLoop::mEventLoop;
 
 /* static */ void EventLoop::CreateInstance() 
 {
-    char *p = getenv(common::POLLER.c_str());
+    const char *p = getenv(common::POLLER.c_str());
     if (p == nullptr) {
         p = "select";
     }
@@ -87,7 +88,6 @@ void EventLoop::LoopOnce()
 {
     std::map<int, int> fdEventMap;    
     mPoller->Poll(1000, fdEventMap);
-    LOG_INFO << "Loop once, get event size: " << fdEventMap.size();
     if ( fdEventMap.size() == 0)
         return ;
 

@@ -14,8 +14,12 @@
 #include <map>
 #include <vector>
 #include <memory>
+#include <functional>
 
 #include "logging.h"
+
+using Callback = std::function<void()>;
+using MsgCallback = std::function<void(int fd)>;
 
 BEGIN_SIMPLE_DB_NS(common)
 

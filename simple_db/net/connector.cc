@@ -9,10 +9,14 @@ Connector::Connector(int fd)
     mConnFd = fd;
     buf = new char[MAX_BUF_SIZE];
     mEventLoop = EventLoop::GetInstance();
+    
 }
 
 Connector::~Connector()
 {
+    mEventLoop->RemoveHandler(mHandler);    
+    if (mCloseCallback)
+        mCloseCallback();
     delete[] buf;
 }
 
@@ -27,11 +31,8 @@ bool Connector::Connect()
 
 void Connector::Read()
 {
-    int n = read(mConnFd, buf, MAX_BUF_SIZE);
-    LOG_INFO << buf;
-    write(mConnFd, "hello", 6);
+    mReadCallback(mConnFd);
     mEventLoop->RemoveHandler(mHandler);
-    mCloseCallback();
 }
 
 END_SIMPLE_DB_NS(net)

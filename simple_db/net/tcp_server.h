@@ -4,9 +4,6 @@
 #include "simple_db/common/common.h"
 #include "simple_db/net/event_loop.h"
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-
 
 BEGIN_SIMPLE_DB_NS(net)
 
@@ -25,17 +22,19 @@ private:
 public:
     bool Bind(int port);
     void RemoveConn(Connector*);
+    void SetOnMessage(const MsgCallback &cb);
 
 private:
-    int Accept();
+    void Accept();
 
 public:
-    bool Start();
+    void Start();
     void Stop();
         
 private:
     EventLoop *mEventLoop;
     std::map<int, Connector*> mConnectorMap;
+    MsgCallback mOnMessage;
     int mListenFd;
 };
 

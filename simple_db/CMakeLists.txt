@@ -4,12 +4,14 @@ add_subdirectory(net)
 
 AUX_SOURCE_DIRECTORY(util DIR_UTIL)
 ADD_LIBRARY(util STATIC ${DIR_UTIL})
-TARGET_LINK_LIBRARIES(util pthread)
+TARGET_LINK_LIBRARIES(util)
 
 AUX_SOURCE_DIRECTORY(common DIR_COMMON)
 ADD_LIBRARY(common STATIC ${DIR_COMMON})
-TARGET_LINK_LIBRARIES(common pthread)
+TARGET_LINK_LIBRARIES(common)
 
-# AUX_SOURCE_DIRECTORY(net DIR_UTIL)
-ADD_LIBRARY(net STATIC net/tcp_server.cc net/poller/poller.cc net/poller/select_poller.cc net/event_loop.cc net/event_handler.cc net/connector.cc)
-TARGET_LINK_LIBRARIES(net pthread)
+AUX_SOURCE_DIRECTORY(net DIR_NET)
+AUX_SOURCE_DIRECTORY(net/poller DIR_POLLER)
+ADD_LIBRARY(net STATIC ${DIR_NET} ${DIR_POLLER})
+TARGET_LINK_LIBRARIES(net)
+

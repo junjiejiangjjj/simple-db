@@ -66,17 +66,16 @@ void SelectPoller::Poll(int timeoutMs, std::map<int, int> &fdMap)
     auto it = mAllFdMap.end();
     it--;
     int maxFd = it->first;
-    LOG_INFO << "Do select " << maxFd + 1;
     mSelectReadSet = mReadSet;
     mSelectWriteSet = mWriteSet;
     mSelectErrorSet = mErrorSet;
     int ret = select(maxFd + 1, &mSelectReadSet, &mSelectWriteSet, &mSelectErrorSet, &waitTime);
     if (ret == -1) {
-        LOG_ERROR << "Do select error";
+        LOG_ERROR << "Do select error " << errno;
+        perror("select");
         return;
     }
     if (ret == 0) {
-        LOG_INFO << "do nothing";
         return;
     }
     for (const auto &item: mAllFdMap) {

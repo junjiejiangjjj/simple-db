@@ -11,8 +11,6 @@ class EventHandler;
 
 class Connector {
 public:
-    typedef std::function<void()> CloseCallback;
-public:
     explicit Connector(int fd);
     virtual ~Connector();
 private:
@@ -21,13 +19,18 @@ private:
 
 public:
     void Read();
-    void SetCloseCallback(const CloseCallback &cb) { mCloseCallback = cb; }
+    // void Write(const std::string &data);
+    // void Write(const char* data);    
+    void SetCloseCallback(const Callback &cb) { mCloseCallback = cb; }
+    void SetReadCallback(const MsgCallback &cb) { mReadCallback = cb; }     
     bool Connect();
     int GetFd() const { return mConnFd; }
 
 private:
     int mConnFd;
-    CloseCallback mCloseCallback;
+    Callback mCloseCallback;
+    MsgCallback mReadCallback;
+    
     EventLoop *mEventLoop;
     EventHandler *mHandler;
     static const size_t MAX_BUF_SIZE = 1024 * 1024;
