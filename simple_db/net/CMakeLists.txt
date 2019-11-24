@@ -51,3 +51,14 @@ add_test(
     ${EXECUTABLE_OUTPUT_PATH}/ConnectorTest
 )
 
+
+ADD_EXECUTABLE(SocketOptTest socket_opt_test.cc)
+TARGET_LINK_LIBRARIES(SocketOptTest net gtest)
+add_test(
+    NAME
+    SocketOptTest
+    COMMAND
+    ${EXECUTABLE_OUTPUT_PATH}/SocketOptTest
+)
+
+

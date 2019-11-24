@@ -2,6 +2,7 @@
 #define SIMPLE_DB_CONNECTOR_H
 
 #include "simple_db/common/common.h"
+#include "simple_db/net/callback_base.h"
 #include <functional>
 
 BEGIN_SIMPLE_DB_NS(net)
@@ -33,8 +34,6 @@ private:
     
     EventLoop *mEventLoop;
     EventHandler *mHandler;
-    static const size_t MAX_BUF_SIZE = 1024 * 1024;
-    char* buf;
 };
 
 END_SIMPLE_DB_NS(net)

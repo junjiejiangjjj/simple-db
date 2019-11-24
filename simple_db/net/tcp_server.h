@@ -3,7 +3,7 @@
 
 #include "simple_db/common/common.h"
 #include "simple_db/net/event_loop.h"
-
+#include "simple_db/net/callback_base.h"
 
 BEGIN_SIMPLE_DB_NS(net)
 

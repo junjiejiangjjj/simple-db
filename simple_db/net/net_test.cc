@@ -1,17 +1,19 @@
 #include <iostream>
 #include <unistd.h>
 #include "tcp_server.h"
+#include "simple_db/net/socket_opt.h"
 
 /*
   创建一个简单的TCP SERVER
   1. 
  */
-void Echo(int fd)
+
+void Echo(simple_db::net::SocketOpt *sckOpt)
 {
-    char c[1024];
-    std::cout << "test" << std::endl;
-    read(fd, c, 1024);
-    write(fd, "nice", 4);
+    char c[1024] = {0};
+    sckOpt->Read(c, 1024);
+    std::cout << c << std::endl;
+    sckOpt->Write("nice", 4);
 }
 
 int main()

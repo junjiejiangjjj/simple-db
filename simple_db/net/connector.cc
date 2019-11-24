@@ -1,6 +1,8 @@
 #include "connector.h"
 #include "simple_db/net/event_loop.h"
 #include "simple_db/net/poller/event.h"
+#include "simple_db/net/net_util.h"
+#include "simple_db/net/socket_opt.h"
 
 BEGIN_SIMPLE_DB_NS(net)
 
@@ -8,7 +10,6 @@ Connector::Connector(int fd)
 {
     NetUtil::SetNoBlock(fd);
     mConnFd = fd;
-    buf = new char[MAX_BUF_SIZE];
     mEventLoop = EventLoop::GetInstance();
 }
 
@@ -17,7 +18,6 @@ Connector::~Connector()
     mEventLoop->RemoveHandler(mHandler);    
     if (mCloseCallback)
         mCloseCallback();
-    delete[] buf;
 }
 
 bool Connector::Connect()
@@ -31,7 +31,8 @@ bool Connector::Connect()
 
 void Connector::Read()
 {
-    mReadCallback(mConnFd);
+    SocketOpt opt(mConnFd);
+    mReadCallback(&opt);
     mEventLoop->RemoveHandler(mHandler);
 }
 
