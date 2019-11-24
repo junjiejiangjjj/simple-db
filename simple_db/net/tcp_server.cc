@@ -16,6 +16,8 @@ TCPServer::TCPServer()
 
 TCPServer::~TCPServer()
 {
+    if (mListenFd)
+        close(mListenFd);
 }
 
 bool TCPServer::Bind(int port)
@@ -26,7 +28,6 @@ bool TCPServer::Bind(int port)
     }
     EventHandler * handler = new EventHandler();
     handler->SetFd(mListenFd);
-    
     handler->SetReadCallback(std::bind(&TCPServer::Accept, this));
     mEventLoop->AddHandler(handler, Event::ReadEvent);
     return true;
@@ -43,7 +44,7 @@ void TCPServer::Accept()
     LOG_INFO << "Do accept";
     int connfd = NetUtil::Accept(mListenFd, nullptr, nullptr);
     LOG_INFO << "New connfd " << connfd;
-
+    NetUtil::SetNoBlock(connfd);
     Connector *conn = new Connector(connfd);
     conn->SetCloseCallback(std::bind(&TCPServer::RemoveConn, this, conn));
     conn->SetReadCallback(mOnMessage);

@@ -50,6 +50,7 @@ private:
     class GC{
     public:
         ~GC() {
+            LOG_INFO << "Do delete eventloop";
             SIMPLE_DB_DELETE_AND_SET_NULL(EventLoop::mEventLoop);
         }
     };

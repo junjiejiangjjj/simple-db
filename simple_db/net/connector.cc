@@ -9,7 +9,6 @@ Connector::Connector(int fd)
     mConnFd = fd;
     buf = new char[MAX_BUF_SIZE];
     mEventLoop = EventLoop::GetInstance();
-    
 }
 
 Connector::~Connector()

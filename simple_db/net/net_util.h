@@ -18,6 +18,7 @@ private:
 public:
     static int Bind(int port);
     static int Accept(int fd, struct sockaddr_in *addr,socklen_t *addrlen);
+    static void SetNoBlock(int fd);
 };
 
 END_SIMPLE_DB_NS(net)
