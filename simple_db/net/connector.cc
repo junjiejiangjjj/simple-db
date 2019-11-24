@@ -6,6 +6,7 @@ BEGIN_SIMPLE_DB_NS(net)
 
 Connector::Connector(int fd)
 {
+    NetUtil::SetNoBlock(fd);
     mConnFd = fd;
     buf = new char[MAX_BUF_SIZE];
     mEventLoop = EventLoop::GetInstance();
