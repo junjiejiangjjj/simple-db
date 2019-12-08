@@ -6,3 +6,4 @@ add_test(
     COMMAND
     ${EXECUTABLE_OUTPUT_PATH}/arena_test
 )
+

@@ -4,10 +4,21 @@
 
 BEGIN_SIMPLE_DB_NS(db)
 
+struct Comparator {
+    int operator() (const int& a, const int& b) const {
+        if (a < b) {
+            return -1;
+        } else if (a > b) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+};
+
 class SkipListTest : public ::testing::Test {
 protected:
-    SkipListTest() {
-
+    SkipListTest(){
     }
     ~SkipListTest() override {
 
@@ -21,25 +32,31 @@ protected:
 
     }
 
+    util::Arena mArena;
+    Comparator mCmp;    
 };
 
-typedef uint32_t Key;
-struct Comparator {
-    int operator() (const Key& a, const Key& b) {
-        if (a < b) {
-            return -1;
-        } else if (a > b) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-}
+
 
 TEST_F(SkipListTest, h) {
-    Arena arena;
-    Comparator cmp;
-    SkipList<Key, Comparator> list(cmp, &arena);
+
+    SkipList<int, Comparator> list(mCmp, &mArena);
+
+    list.Insert(1);
+    list.Insert(2);
+    list.Insert(7);
+    list.Insert(3);
+    ASSERT_TRUE(list.Contains(1));
+    ASSERT_TRUE(list.Contains(7));
+    ASSERT_FALSE(list.Contains(10));
+
+    SkipList<int, Comparator>::Iterator it(&list);
+    int i = 0;
+    int except[4] = {1,2,3,7};
+    for (; it.Valid(); it.Next()) {
+        ASSERT_EQ(it.GetKey(), except[i]);
+        i++;
+    }
 }
 
 END_SIMPLE_DB_NS(db)

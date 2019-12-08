@@ -35,7 +35,7 @@ else()
     SET(BUILD_CONFIGURATION "release")
 endif()
 
-SET(CMAKE_CXX_FLAGS "-std=c++14 -pthread -fPIC -W -Wall")
+SET(CMAKE_CXX_FLAGS "-g -std=c++14 -pthread -fPIC -W -Wall")
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
