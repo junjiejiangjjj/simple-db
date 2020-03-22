@@ -1,64 +1,45 @@
+add_library(net)
 
-# ADD_EXECUTABLE(net_test net_test.cc)
-# TARGET_LINK_LIBRARIES(net_test util gtest)
-# add_test(
-#     NAME
-#     net_test
-#     COMMAND
-#     ${EXECUTABLE_OUTPUT_PATH}/net_test
-# )
+target_sources(net
+  PRIVATE
+  event_handler.cc
+  event_loop.cc
+  tcp_server.cc
+  socket_opt.cc
+  connector.cc
+  PUBLIC
+  ${CMAKE_CURRENT_LIST_DIR}/net_util.h
+  ${CMAKE_CURRENT_LIST_DIR}/event_loop.h
+  ${CMAKE_CURRENT_LIST_DIR}/event_handler.h
+  ${CMAKE_CURRENT_LIST_DIR}/tcp_server.h
+  ${CMAKE_CURRENT_LIST_DIR}/socket_opt.h
+  ${CMAKE_CURRENT_LIST_DIR}/connector.h
+  ${CMAKE_CURRENT_LIST_DIR}/callback_base.h
+  )
 
-# ADD_EXECUTABLE(ListenHandlerTest listen_handler_test.cc)
-# TARGET_LINK_LIBRARIES(ListenHandlerTest net gtest)
-# add_test(
-#     NAME
-#     ListenHandlerTest
-#     COMMAND
-#     ${EXECUTABLE_OUTPUT_PATH}/ListenHandlerTest
-# )
-
-# ADD_EXECUTABLE(EventLoopTest event_loop_test.cc)
-# TARGET_LINK_LIBRARIES(EventLoopTest net gtest)
-# add_test(
-#     NAME
-#     EventLoopTest
-#     COMMAND
-#     ${EXECUTABLE_OUTPUT_PATH}/EventLoopTest
-# )
-
-
-# ADD_EXECUTABLE(TcpServerTest tcp_server_test.cc)
-# TARGET_LINK_LIBRARIES(TcpServerTest net gtest)
-# add_test(
-#     NAME
-#     TcpServerTest
-#     COMMAND
-#     ${EXECUTABLE_OUTPUT_PATH}/TcpServerTest
-# )
-
-
-
-
-
-
+target_include_directories(net
+  PUBLIC
+  ${CMAKE_CURRENT_LIST_DIR}
+    )
 
 ADD_EXECUTABLE(ConnectorTest connector_test.cc)
 TARGET_LINK_LIBRARIES(ConnectorTest net gtest)
+
 add_test(
-    NAME
-    ConnectorTest
-    COMMAND
-    ${EXECUTABLE_OUTPUT_PATH}/ConnectorTest
-)
+  NAME
+  ConnectorTest
+  COMMAND
+  $<TARGET_FILE:ConnectorTest>
+    )
 
 
 ADD_EXECUTABLE(SocketOptTest socket_opt_test.cc)
 TARGET_LINK_LIBRARIES(SocketOptTest net gtest)
-add_test(
-    NAME
-    SocketOptTest
-    COMMAND
-    ${EXECUTABLE_OUTPUT_PATH}/SocketOptTest
-)
 
+add_test(
+  NAME
+  SocketOptTest
+  COMMAND
+  $<TARGET_FILE:SocketOptTest>
+  )
 

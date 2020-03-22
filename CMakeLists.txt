@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.3)
+cmake_minimum_required (VERSION 3.5)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -35,10 +35,15 @@ else()
     SET(BUILD_CONFIGURATION "release")
 endif()
 
-SET(CMAKE_CXX_FLAGS "-g -std=c++14 -pthread -fPIC -W -Wall")
+# list(APPEND flags "-fPIC" "-Wall" "-Wextra" "-Wpedantic")
 
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
+set(CMAKE_CXX_FLAGS "-g -std=c++14 -pthread -fPIC -W -Wall")
 
-ENABLE_TESTING()
+find_program(MEMORYCHECK_COMMAND NAMES valgrind)
+set(MEMORYCHECK_COMMAND_OPTIONS "--trace-children=yes --leak-check=full")
+
+include(CTest)
+
+enable_testing()
+
 add_subdirectory(simple_db)
