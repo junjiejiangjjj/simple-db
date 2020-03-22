@@ -4,17 +4,17 @@ target_sources(util
   PRIVATE
   comparator.cc
   arena.cc
+  no_destructor.h
   PUBLIC
   ${CMAKE_CURRENT_LIST_DIR}/arena.h
   ${CMAKE_CURRENT_LIST_DIR}/comparator.h
-  ${CMAKE_CURRENT_LIST_DIR}/no_destructor.h
   ${CMAKE_CURRENT_LIST_DIR}/slice.h  
   )
 
 target_include_directories(util
   PUBLIC
   ${CMAKE_CURRENT_LIST_DIR}
-    )
+  )
 
 
 ADD_EXECUTABLE(arena_test arena_test.cc)
