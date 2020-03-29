@@ -52,6 +52,28 @@ TEST_F(StringUtilTest, h) {
         std::string t = StringUtil::GetTimeString("%Y-%m-%d %H:%M:%S");
         std::cout<< t <<std::endl;
     }
+    
+    {
+        std::string value = StringUtil::UInt32ToString(1024, 10);
+        ASSERT_EQ(value, "0000001024");
+
+        value = StringUtil::UInt32ToString(1024, 8);
+        ASSERT_EQ(value, "00001024");
+        
+        uint32_t num1 = 0;
+        bool valid = StringUtil::StringToUInt32("1234", &num1);
+        ASSERT_TRUE(valid);
+        ASSERT_EQ(num1, 1234);
+
+        valid = StringUtil::StringToUInt32("51234a", &num1);
+        ASSERT_EQ(num1, 51234);        
+
+        ASSERT_TRUE(valid);
+
+        valid = StringUtil::StringToUInt32("aaaaa", &num1);
+        ASSERT_FALSE(valid);        
+    }
+
 }
 }
 

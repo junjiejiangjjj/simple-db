@@ -1,4 +1,6 @@
 #include "simple_db/common/string_util.h"
+#include <sstream>
+#include <iomanip>
 
 
 namespace simple_db {
@@ -31,6 +33,27 @@ std::string StringUtil::GetTimeString(const std::string& timeFormat)
     ::strftime(buf, 50, timeFormat.c_str(), &t);
     return std::string(buf);
 }
+
+
+    std::string StringUtil::UInt32ToString(uint32_t value, size_t outputSize)
+    {
+        std::ostringstream ostr;
+        ostr << std::setw(outputSize) << std::setfill('0') << value;
+        return ostr.str();
+    }
+
+
+    bool StringUtil::StringToUInt32(const std::string &strValue, uint32_t *value)
+    {
+        try {
+            (*value) = std::stoul(strValue);
+        } catch (std::invalid_argument){
+            return false;
+        } catch (std::out_of_range) {
+            return false;
+        }
+        return true;
+    }
 
 }
 

@@ -146,7 +146,7 @@ add_test(
         NewClass.create_file(self.head_file_name, self.header_str)
         NewClass.create_file(self.cc_file_name, self.cc_str)
         NewClass.create_file(self.test_file_name, self.test_str)
-        NewClass.append_file(self.cmake_file, self.add_cmake)
+        # NewClass.append_file(self.cmake_file, self.add_cmake)
 
 if __name__ == '__main__':
     '''输入为类名，采用驼峰格式
