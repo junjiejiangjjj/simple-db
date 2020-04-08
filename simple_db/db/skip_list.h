@@ -46,6 +46,7 @@ public:
         const Key& GetKey();
         void Next();
         bool Valid() {return mCurNode != nullptr; }
+        void Seek(const Key& target);
 
     private:
         const SkipList *mList;
@@ -74,6 +75,7 @@ SkipList<Key, Comparator>::SkipList(Comparator cmp, util::Arena* arena): mMaxHei
                                                                          mArena(arena),
                                                                          mHeader(NewNode(0, MAX_HEIGHT))
 {
+    
 }
 
 
@@ -97,7 +99,6 @@ void SkipList<Key, Comparator>::Insert(const Key &key)
     // get prevs
     Node* prev[mMaxHeight];
     FindGreaterOrEqual(key, prev);
-
     // do insert
     for (int i = 0; i < height; i++) {
         if (prev[i] != nullptr) {
@@ -122,20 +123,17 @@ typename SkipList<Key, Comparator>::Node* SkipList<Key, Comparator>::FindGreater
 {
     Node* node = mHeader;
     int i = mMaxHeight - 1;
-    Node* next = node->Next(i);
     while (true) {
-        if (next != nullptr && mComparator(next->mKey, key) <= 0 ) {
+        Node* next = node->Next(i);
+        if (next != nullptr && mComparator(next->mKey, key) < 0 ) {
             node = next;
-            next = node->Next(i);
-            continue;
         } else {
             if (prev != nullptr)
                 prev[i] = node;
             if (i == 0) {
-                return node;
+                return next;
             } else {
-                --i;
-                next = node->Next(i);
+                i--;
             }
         }
     }
@@ -179,6 +177,12 @@ template<typename Key, class Comparator>
 void SkipList<Key, Comparator>::Iterator::Next()
 {
     mCurNode = mCurNode->Next(0);
+}
+
+template<typename Key, class Comparator>
+void SkipList<Key, Comparator>::Iterator::Seek(const Key& target)
+{
+    mCurNode = mList->FindGreaterOrEqual(target, nullptr);
 }
 
 

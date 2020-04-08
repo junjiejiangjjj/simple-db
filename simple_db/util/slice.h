@@ -11,6 +11,15 @@ public:
     Slice() : mData(""), mSize(0) {}
     Slice(const char* data, size_t size) : mData(data), mSize(size) {}
     Slice(const std::string& s) : mData(s.c_str()), mSize(s.size()) {}
+    Slice(const char* s) {
+        if (s) {
+            mData = s;
+            mSize = strlen(s);
+        }else {
+            mData = "";
+            mSize = 0;
+        }
+    }
 
     const char* GetData() const {return mData;}
     size_t GetSize() const {return mSize;}
@@ -64,6 +73,8 @@ inline int Slice::Compare(const Slice& r) const {
         } else if (mSize > r.mSize) {
             ret = 1;
         }
+    } else {
+        ret = ret > 0 ? 1 : -1;        
     }
     return ret;
 }

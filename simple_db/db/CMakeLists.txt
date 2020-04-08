@@ -3,9 +3,11 @@ add_library(db)
 target_sources(db
   PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}/record.cc
+  ${CMAKE_CURRENT_LIST_DIR}/mem_table.cc
   PUBLIC
   ${CMAKE_CURRENT_LIST_DIR}/skip_list.h
-  ${CMAKE_CURRENT_LIST_DIR}/record.h  
+  ${CMAKE_CURRENT_LIST_DIR}/record.h
+  ${CMAKE_CURRENT_LIST_DIR}/mem_table.h
   )
 
 target_include_directories(db
@@ -31,7 +33,19 @@ add_test(
     RecordTest
     COMMAND
     $<TARGET_FILE:RecordTest>
+    )
+
+ADD_EXECUTABLE(MemTableTest mem_table_test.cc)
+TARGET_LINK_LIBRARIES(MemTableTest db util common gtest)
+
+add_test(
+    NAME
+    MemTableTest
+    COMMAND
+    $<TARGET_FILE:MemTableTest>
 )
 
 
+  
 
+  

@@ -2,11 +2,21 @@
 #include "simple_db/common/string_util.h"
 BEGIN_SIMPLE_DB_NS(db)
 
-Record::Record(const std::string &key, const std::string &value, RecordType recordType)
+Record::Record(const std::string &key, const std::string &value, RecordType recordType):mKey(key),
+    mValue(value),
+    mRecordType(recordType)
 {
-    mKey = key;
-    mValue = value;
-    mRecordType = recordType;
+}
+
+Record::Record(const char* key, uint32_t size)
+{
+    if (size == 0) {
+        mKey = "";
+    } else {
+        mKey = std::string(key, size);
+    }
+    mValue = "";
+    mRecordType = RecordType::VALUE;
 }
 
 Record::~Record()
@@ -54,7 +64,7 @@ bool Record::PaserFromString(const std::string &str)
         return false;
     }
     if (tag == 0) {
-        mRecordType = RecordType::ADD;
+        mRecordType = RecordType::VALUE;
     } else {
         mRecordType = RecordType::DELETE;        
     }
@@ -70,7 +80,13 @@ bool Record::PaserFromString(const std::string &str)
     return true;
 }
 
-void Record::SerializeToString(std::string *str)
+bool Record::PaserFromSlice(const util::Slice &str)
+{
+    std::string s(str.GetData(), str.GetSize());
+    return PaserFromString(s);
+}
+
+void Record::SerializeToString(std::string *str) const
 {
     // {key_size}{user_key}{tag}{value_size}{value}
     //    10 + len(user_key) + 8 + 10 + len(value)

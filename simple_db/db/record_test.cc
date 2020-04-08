@@ -23,14 +23,14 @@ protected:
 
 TEST_F(RecordTest, h) {
     {
-        Record r1("r1", "teset", Record::RecordType::ADD);
+        Record r1("r1", "teset", Record::RecordType::VALUE);
         std::string output;
         r1.SerializeToString(&output);
         Record r2;
         r2.PaserFromString(output);
         ASSERT_EQ(r2.GetKey(), "r1");
         ASSERT_EQ(r2.GetValue(), "teset");
-        ASSERT_EQ(r2.GetType(), Record::RecordType::ADD);        
+        ASSERT_EQ(r2.GetType(), Record::RecordType::VALUE);        
     }
 
     {

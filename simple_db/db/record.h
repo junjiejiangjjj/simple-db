@@ -12,11 +12,12 @@ class Record final {
     //    10 + len(user_key) + 8 + 10 + len(value)
 
 public:
-    enum RecordType { ADD=0, DELETE};
+    enum RecordType { VALUE=0, DELETE=1};
 
 public:
     Record(const std::string &key, const std::string &value, RecordType recordType);
-    Record() {}    
+    Record() {}
+    Record(const char* key, uint32_t size = 0);
     virtual ~Record();
     
 private:
@@ -28,10 +29,11 @@ private:
 
 public:
     bool PaserFromString(const std::string &str);
-    void SerializeToString(std::string *str);
-    std::string GetKey() {return mKey;}
-    std::string GetValue() {return mValue;}
-    RecordType GetType() {return mRecordType;}        
+    bool PaserFromSlice(const util::Slice &str);    
+    void SerializeToString(std::string *str) const;
+    const std::string& GetKey() const {return mKey;}
+    const std::string& GetValue() const {return mValue;}
+    RecordType GetType() const {return mRecordType;}        
 
 private:
     std::string mKey;
