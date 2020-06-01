@@ -5,9 +5,10 @@
 #include <stddef.h>
 #include <assert.h>
 #include <vector>
-#include <mutex>
+#include <atomic>
 
 BEGIN_SIMPLE_DB_NS(util)
+
 
 class Arena {
 public:
@@ -23,21 +24,19 @@ private:
     char* AllocateFallback(size_t bytes);
     char* AllocateNewBlock(size_t blockBytes);
 public:
-    size_t GetToalMem() {return mTotalMem;}
+    size_t GetToalMem() {return mTotalMem.load(std::memory_order_relaxed);}
     size_t GetReminingBufSize() {return mRemainingBufSize; }
 private:
     std::vector<char*> mBlocks;
     size_t mRemainingBufSize;
-    size_t mTotalMem;
+    std::atomic<size_t> mTotalMem;
     char* mCurAlloc;
-    std::mutex mMutex;
 };
 
 inline char* Arena::Allocate(size_t bytes){
     if (bytes <= 0) {
         return nullptr;
     }
-    std::unique_lock<std::mutex> lk(mMutex);
     if (bytes <= mRemainingBufSize){
         char* cur = mCurAlloc;
         mCurAlloc += bytes;

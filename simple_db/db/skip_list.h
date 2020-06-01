@@ -4,6 +4,7 @@
 
 #include "simple_db/common/common.h"
 #include "simple_db/util/arena.h"
+#include <atomic>
 #include <memory>
 #include <ctime>
 #include <random>
@@ -31,7 +32,7 @@ private:
     enum { MAX_HEIGHT = 12 };
 
     inline int GetMaxHeight() const {
-        return mMaxHeight;
+        return mMaxHeight.load(std::memory_order_relaxed);
     }
 
     
@@ -60,7 +61,7 @@ private:
 
 private:
     // 当前skip list最大高度
-    int mMaxHeight;
+    std::atomic<int> mMaxHeight;
     Comparator const mComparator;    
     util::Arena* const mArena;
     Node* const mHeader;
@@ -70,7 +71,7 @@ private:
 // ----------------------------------------- skip list -----------------------------------------------------//
 
 template<typename Key, class Comparator>
-SkipList<Key, Comparator>::SkipList(Comparator cmp, util::Arena* arena): mMaxHeight(0),
+SkipList<Key, Comparator>::SkipList(Comparator cmp, util::Arena* arena): mMaxHeight(1),
                                                                          mComparator(cmp),
                                                                          mArena(arena),
                                                                          mHeader(NewNode(0, MAX_HEIGHT))
@@ -89,20 +90,20 @@ void SkipList<Key, Comparator>::Insert(const Key &key)
 {
     // get node height
     int height = RandomHeigth();
-    if (height > mMaxHeight) {
-        mMaxHeight = height;
+    if (height > GetMaxHeight()) {
+        mMaxHeight.store(height, std::memory_order_relaxed);
     }
 
     // create new node
     Node* node = NewNode(key, height);
 
     // get prevs
-    Node* prev[mMaxHeight];
+    Node* prev[MAX_HEIGHT];
     FindGreaterOrEqual(key, prev);
     // do insert
     for (int i = 0; i < height; i++) {
         if (prev[i] != nullptr) {
-            node->AddNext(i, prev[i]->Next(i));
+            node->NoBarrierAddNext(i, prev[i]->Next(i));
             prev[i]->AddNext(i, node);
         }
     }
@@ -122,8 +123,14 @@ template<typename Key, class Comparator>
 typename SkipList<Key, Comparator>::Node* SkipList<Key, Comparator>::FindGreaterOrEqual(const Key& key, Node** prev) const
 {
     Node* node = mHeader;
-    int i = mMaxHeight - 1;
+    int i = GetMaxHeight() - 1;
+    
     while (true) {
+        if (i < 0) {
+            LOG_ERROR << GetMaxHeight();
+            LOG_ERROR << i;
+        }
+        assert(i >= 0);
         Node* next = node->Next(i);
         if (next != nullptr && mComparator(next->mKey, key) < 0 ) {
             node = next;
@@ -157,7 +164,7 @@ int SkipList<Key, Comparator>::RandomHeigth()
 template<typename Key, class Comparator>
 typename SkipList<Key, Comparator>::Node* SkipList<Key, Comparator>::NewNode(const Key &key, int height)
 {
-    char* const nodeMem =  mArena->AllocateAligned(sizeof(Node) + sizeof(Node*) * (height - 1));
+    char* const nodeMem =  mArena->AllocateAligned(sizeof(Node) + sizeof(std::atomic<Node*>) * (height - 1));
     Node* newNode = new (nodeMem) Node(key);
     for (int i = 0; i < height; i++) {
         newNode->mNext[i] = nullptr;
@@ -192,9 +199,12 @@ struct SkipList<Key, Comparator>::Node {
     explicit Node(Key key);
     Node *Next(int n);
     void AddNext(int n, Node *next);
+    
+    void NoBarrierAddNext(int n, Node *next);
+    Node *NoBarriesrNext(int n);
 
     const Key mKey;
-    Node* mNext[1];
+    std::atomic<Node*> mNext[1];
 
 };
 
@@ -206,13 +216,25 @@ SkipList<Key, Comparator>::Node::Node(Key key): mKey(key)
 template<typename Key, class Comparator>
 void SkipList<Key, Comparator>::Node::AddNext(int n, Node *next)
 {
-    mNext[n] = next;
+    mNext[n].store(next, std::memory_order_release);
 }
 
 template<typename Key, class Comparator>
 typename SkipList<Key, Comparator>::Node* SkipList<Key, Comparator>::Node::Next(int n)
 {
-    return mNext[n];
+    return mNext[n].load(std::memory_order_acquire);
+}
+
+template<typename Key, class Comparator>
+void SkipList<Key, Comparator>::Node::NoBarrierAddNext(int n, Node *next)
+{
+    mNext[n].store(next, std::memory_order_relaxed);
+}
+
+template<typename Key, class Comparator>
+typename SkipList<Key, Comparator>::Node* SkipList<Key, Comparator>::Node::NoBarriesrNext(int n)
+{
+    return mNext[n].load(std::memory_order_relaxed);
 }
 
 

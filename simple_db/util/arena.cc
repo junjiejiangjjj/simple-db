@@ -50,7 +50,7 @@ char* Arena::AllocateFallback(size_t bytes){
 char* Arena::AllocateNewBlock(size_t block_bytes){
     char* ret = new char[block_bytes];
     mBlocks.push_back(ret);
-    mTotalMem += block_bytes;
+    mTotalMem.fetch_add(block_bytes + sizeof(char*), std::memory_order_relaxed);
     return ret;
 }
 END_SIMPLE_DB_NS(util)

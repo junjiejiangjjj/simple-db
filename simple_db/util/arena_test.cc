@@ -21,12 +21,12 @@ TEST_F(ArenaTest, h) {
     Arena a;
     size_t size = 4096;
     char* buf = a.Allocate(size);
-    ASSERT_EQ(a.GetToalMem(), size);
+    ASSERT_EQ(a.GetToalMem(), size + sizeof(char*));
     a.Allocate(10);
-    ASSERT_EQ(a.GetToalMem(), size * 2);
+    ASSERT_EQ(a.GetToalMem(), (size + sizeof(char*)) * 2);
     ASSERT_EQ(a.GetReminingBufSize(), size - 10);
     a.Allocate(10);
-    ASSERT_EQ(a.GetToalMem(), size * 2);
+    ASSERT_EQ(a.GetToalMem(), (size + sizeof(char*)) * 2);
     ASSERT_EQ(a.GetReminingBufSize(), size - 20);
     a.AllocateAligned(17);
     // 3 * 8 - 20 + 17 = 21

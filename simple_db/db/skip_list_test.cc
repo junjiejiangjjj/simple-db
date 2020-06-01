@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 #include "simple_db/db/skip_list.h"
 #include "simple_db/util/slice.h"
+#include <thread>
 
 BEGIN_SIMPLE_DB_NS(db)
 
@@ -90,12 +91,57 @@ TEST_F(SkipListTest, h) {
         it.Seek("ad");
         i = 2;
         for (; it.Valid(); it.Next()) {
-            std::cout << it.GetKey().GetData() << std::endl;
             ASSERT_EQ(it.GetKey(), except[i]);
             i++;
         }
     }
+}
 
+void WriteThread(SkipList<int, Comparator> &list){
+    for (int i = 0; i < 1000; ++i) {
+        list.Insert(i);
+    }
+}
+
+void ReadThread(SkipList<int, Comparator> &list, int i, bool check){
+    while (true) {
+        bool ret = list.Contains(i);
+        if (check) {
+            if (i < 1000) {
+                ASSERT_TRUE(ret);
+            } else {
+                ASSERT_FALSE(ret);            
+            }            
+        }
+
+        ++i;
+        if (i > 2000) {
+            break;
+        }
+    }
+    
+}
+
+TEST_F(SkipListTest, multi_thread) {
+    // 一写多读
+    SkipList<int, Comparator> list(mCmp, &mArena);
+    std::thread ws = std::thread([&list] { WriteThread(list); });
+    std::vector<std::thread> ts;
+    for (int i = 0; i < 100; ++i) {
+        ts.push_back(std::thread([&list, i] { ReadThread(list, i, false); }));
+    }
+    for (auto &t: ts) {
+        t.join();
+    }
+
+    ws.join();
+    ts.clear();
+    for (int i = 0; i < 100; ++i) {
+        ts.push_back(std::thread([&list, i] { ReadThread(list, i, true); }));
+    }
+    for (auto &t: ts) {
+        t.join();
+    }    
 }
 
 END_SIMPLE_DB_NS(db)
