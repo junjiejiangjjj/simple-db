@@ -26,6 +26,7 @@ protected:
 TEST_F(TableTest, h) {
     {
         Table table("test_table", "");
+        table.Start();
         table.Add("test", "xba");
         std::string v;
         bool ret = table.Get("test", &v);
@@ -33,7 +34,8 @@ TEST_F(TableTest, h) {
         ASSERT_EQ(v, "xba");
     }
     {
-        Table table("test_table", "");        
+        Table table("test_table", "");
+        table.Start();
         for (int i = 0; i < 100; i++) {
             table.Add(std::to_string(i), std::to_string(i * i));
         }
@@ -69,8 +71,10 @@ void Delete(Table *table, int start, int end)
     std::cout << "Delete " << start << " to " << end << " finish" << std::endl;;    
 }
 
+
 TEST(normal, multi_thread) {
     Table  table("test", "");
+    table.Start();
     std::thread write_t1(Write, &table, 0, 160);
     std::thread write_t2(Write, &table, 100, 200);
     write_t1.join();

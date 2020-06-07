@@ -4,12 +4,18 @@
 // thread safe table
 
 #include <mutex>
+#include <atomic>
+#include <thread>
+#include <deque>
+#include <condition_variable>
 
 #include "simple_db/db/mem_table.h"
 #include "simple_db/common/common.h"
 
 BEGIN_SIMPLE_DB_NS(db)
 
+
+class Writer;
 
 class Table {
 
@@ -24,18 +30,27 @@ public:
     const std::string &TableName() { return mTableName; }
 
 public:
-    void Add(const std::string &key, const std::string &value);
+    bool Start();
+    void Stop();    
+    bool Add(const std::string &key, const std::string &value);
     bool Get(const std::string &key, std::string *value);
-    void Delete(const std::string &key);
+    bool Delete(const std::string &key);
+
+private:    
+    void BatchWrite();
+    bool AddToQueue(Writer *);
 
 private:
     std::mutex mMutex;
-    
+    std::thread mWriteThread;
+    std::condition_variable mNotEmpty;
 
 private:
+    std::atomic_bool mStart;
     const std::string mTableName;
     const std::string mTableDir;
     MemTable *mMemTable;
+    std::deque<Writer*> mWriteQueue;
     
 };
 
