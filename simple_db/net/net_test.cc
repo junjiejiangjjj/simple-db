@@ -5,7 +5,6 @@
 
 /*
   创建一个简单的TCP SERVER
-  1. 
  */
 
 void Echo(simple_db::net::SocketOpt *sckOpt)

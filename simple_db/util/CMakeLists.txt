@@ -6,7 +6,10 @@ target_sources(util
   arena.cc
   no_destructor.h
   block_queue.h
-  thread_pool.cc  
+  thread_pool.cc
+  writable_file.cc
+  log_writer.cc
+  log_format.h
   PUBLIC
   # ${CMAKE_CURRENT_LIST_DIR}/arena.h
   # ${CMAKE_CURRENT_LIST_DIR}/comparator.h

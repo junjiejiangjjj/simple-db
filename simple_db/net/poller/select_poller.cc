@@ -19,8 +19,9 @@ SelectPoller::~SelectPoller()
 
 void SelectPoller::Update(int fd, int event)
 {
-    LOG_INFO << "Add fd " << fd << " Event " << event;
+    LOG_INFO << "Update fd " << fd << " Event " << event;
     if (mAllFdMap.find(fd) == mAllFdMap.end()) {
+        LOG_INFO << "Not find fd " << fd << " do add";
         mAllFdMap[fd] = event;
     }
     

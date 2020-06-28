@@ -8,6 +8,13 @@ BEGIN_SIMPLE_DB_NS(net)
 
 void EventHandler::HandleEvent(int event)
 {
+    if ((event & Event::ErrorEvent)) {
+        if (mErrorCallback) {
+            mErrorCallback();            
+        }
+        return;
+    }
+    
     if ((event & Event::ReadEvent) && mReadCallback) {
         mReadCallback();
     }
@@ -16,11 +23,7 @@ void EventHandler::HandleEvent(int event)
         mWriteCallback();
     }
 
-    if ((event & Event::ErrorEvent) && mErrorCallback) {
-        mErrorCallback();
-    }    
 }
-
 
 
 END_SIMPLE_DB_NS(net)

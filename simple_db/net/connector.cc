@@ -15,16 +15,17 @@ Connector::Connector(int fd)
 
 Connector::~Connector()
 {
-    mEventLoop->RemoveHandler(mHandler);    
-    if (mCloseCallback)
-        mCloseCallback();
+    LOG_INFO << "Do destroy connector";
+    mEventLoop->RemoveHandler(mHandler);
+    SIMPLE_DB_DELETE_AND_SET_NULL(mHandler);
 }
 
 bool Connector::Connect()
 {
     mHandler = new EventHandler();
     mHandler->SetFd(mConnFd);
-    mHandler->SetReadCallback(std::bind(&Connector::Read, this));
+    mHandler->SetReadCallback([&] { this->Read(); });
+    mHandler->SetErrorCallback([&] { this->Close(); });
     mEventLoop->AddHandler(mHandler, Event::ReadEvent);
     return true;
 }
@@ -33,8 +34,14 @@ void Connector::Read()
 {
     SocketOpt opt(mConnFd);
     mReadCallback(&opt);
-    mEventLoop->RemoveHandler(mHandler);
 }
+
+void Connector::Close()
+{
+    if (mCloseCallback)
+        mCloseCallback();
+}
+
 
 END_SIMPLE_DB_NS(net)
 

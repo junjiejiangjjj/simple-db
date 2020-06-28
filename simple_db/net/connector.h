@@ -20,6 +20,7 @@ private:
 
 public:
     void Read();
+    void Close();
     // void Write(const std::string &data);
     // void Write(const char* data);    
     void SetCloseCallback(const Callback &cb) { mCloseCallback = cb; }

@@ -2,6 +2,7 @@
 #define SIMPLE_DB_EVENT_LOOP_H
 
 #include "simple_db/common/common.h"
+#include "simple_db/util/thread_pool.h"
 #include "event_handler.h"
 #include <map>
 #include <mutex>
@@ -13,6 +14,7 @@ class EventHandler;
 class Poller;
 
 class EventLoop final {
+
 private:
     explicit EventLoop(Poller *poller);
     ~EventLoop();

@@ -17,6 +17,7 @@
 #include <functional>
 
 #include "logging.h"
+#include "status.h"
 
 using Callback = std::function<void()>;
 

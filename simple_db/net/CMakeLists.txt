@@ -7,19 +7,20 @@ target_sources(net
   tcp_server.cc
   socket_opt.cc
   connector.cc
-  net_util.h
+  net_util.cc
   poller/poller.cc
   poller/select_poller.cc
-  poller/select_poller.h
+  poller/epoll.cc
+  # poller/select_poller.h
   PUBLIC
-  ${CMAKE_CURRENT_LIST_DIR}/event_loop.h
-  ${CMAKE_CURRENT_LIST_DIR}/event_handler.h
-  ${CMAKE_CURRENT_LIST_DIR}/tcp_server.h
-  ${CMAKE_CURRENT_LIST_DIR}/socket_opt.h
-  ${CMAKE_CURRENT_LIST_DIR}/connector.h
-  ${CMAKE_CURRENT_LIST_DIR}/callback_base.h
-  ${CMAKE_CURRENT_LIST_DIR}/poller/event.h
-  ${CMAKE_CURRENT_LIST_DIR}/poller/poller.h
+  # ${CMAKE_CURRENT_LIST_DIR}/event_loop.h
+  # ${CMAKE_CURRENT_LIST_DIR}/event_handler.h
+  # ${CMAKE_CURRENT_LIST_DIR}/tcp_server.h
+  # ${CMAKE_CURRENT_LIST_DIR}/socket_opt.h
+  # ${CMAKE_CURRENT_LIST_DIR}/connector.h
+  # ${CMAKE_CURRENT_LIST_DIR}/callback_base.h
+  # ${CMAKE_CURRENT_LIST_DIR}/poller/event.h
+  # ${CMAKE_CURRENT_LIST_DIR}/poller/poller.h
   )
 
 
@@ -69,4 +70,7 @@ add_test(
     SelectPollerTest
     COMMAND
     SelectPollerTest
-)
+    )
+
+ADD_EXECUTABLE(NetTest net_test)
+TARGET_LINK_LIBRARIES(NetTest net util common)

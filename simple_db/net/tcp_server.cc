@@ -36,17 +36,16 @@ bool TCPServer::Bind(int port)
 void TCPServer::RemoveConn(Connector *conn)
 {
     mConnectorMap.erase(conn->GetFd());
-    SIMPLE_DB_DELETE_AND_SET_NULL(conn);
+    // SIMPLE_DB_DELETE_AND_SET_NULL(conn);
 }
 
 void TCPServer::Accept()
 {
-    LOG_INFO << "Do accept";
+    LOG_DEBUG << "Do accept";
     int connfd = NetUtil::Accept(mListenFd, nullptr, nullptr);
     LOG_INFO << "New connfd " << connfd;
-    NetUtil::SetNoBlock(connfd);
-    Connector *conn = new Connector(connfd);
-    conn->SetCloseCallback(std::bind(&TCPServer::RemoveConn, this, conn));
+    std::shared_ptr<Connector> conn = std::make_shared<Connector>(connfd);
+    conn->SetCloseCallback(std::bind(&TCPServer::RemoveConn, this, conn.get()));
     conn->SetReadCallback(mOnMessage);
     conn->Connect();
     mConnectorMap[connfd] = conn;

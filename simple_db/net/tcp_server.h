@@ -33,7 +33,7 @@ public:
         
 private:
     EventLoop *mEventLoop;
-    std::map<int, Connector*> mConnectorMap;
+    std::map<int, std::shared_ptr<Connector> > mConnectorMap;
     MsgCallback mOnMessage;
     int mListenFd;
 };

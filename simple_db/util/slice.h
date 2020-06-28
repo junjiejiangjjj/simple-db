@@ -21,30 +21,30 @@ public:
         }
     }
 
-    const char* GetData() const {return mData;}
-    size_t GetSize() const {return mSize;}
-    bool IsEmpty() const {return mSize == 0;}
+    inline const char* GetData() const {return mData;}
+    inline size_t GetSize() const {return mSize;}
+    inline bool IsEmpty() const {return mSize == 0;}
 
     char operator[](size_t n) const {
         assert(n < GetSize());
         return mData[n];
     }
 
-    void Clear() {
+    inline void Clear() {
         mData = "";
         mSize = 0;
     }
 
-    void RemovePrefix(size_t n) {
+    inline void RemovePrefix(size_t n) {
         assert(n < GetSize());
         mData += n;
         mSize -= n;
     }
 
-    std::string ToString() {return std::string(mData, mSize);}
+    inline std::string ToString() {return std::string(mData, mSize);}
 
     int Compare(const Slice&) const;
-    bool StartWiths(const Slice& x) const {
+    inline bool StartWiths(const Slice& x) const {
         return ((mSize >= x.mSize) && (memcmp(mData, x.mData, x.mSize) == 0));
     }
 
